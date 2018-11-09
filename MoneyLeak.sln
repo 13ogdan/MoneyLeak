@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyLeakWindows", "MoneyLeakWindows\MoneyLeakWindows.csproj", "{08200633-5A59-447B-8BA5-29A55CC0A20A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankReport", "BankReport\BankReport.csproj", "{16CE542E-4C86-4238-8CDA-79BE187381CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankReport", "BankReport\BankReport.csproj", "{16CE542E-4C86-4238-8CDA-79BE187381CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankReportTest", "BankReportTest\BankReportTest.csproj", "{A6776D72-1C19-453C-B1EC-AB54154B56F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{16CE542E-4C86-4238-8CDA-79BE187381CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16CE542E-4C86-4238-8CDA-79BE187381CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16CE542E-4C86-4238-8CDA-79BE187381CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6776D72-1C19-453C-B1EC-AB54154B56F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6776D72-1C19-453C-B1EC-AB54154B56F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6776D72-1C19-453C-B1EC-AB54154B56F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6776D72-1C19-453C-B1EC-AB54154B56F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
