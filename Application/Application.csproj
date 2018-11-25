@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="8.0.100" />
+    <PackageReference Include="MediatR" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EFStorage\EFStorage.csproj" />
+    <ProjectReference Include="..\Entities\Entity.csproj" />
+    <ProjectReference Include="..\Standart\BankReport.csproj" />
+  </ItemGroup>
+
+</Project>
