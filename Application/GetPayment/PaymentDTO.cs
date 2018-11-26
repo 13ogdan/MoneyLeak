@@ -1,4 +1,4 @@
-﻿namespace Application.Payment
+﻿namespace Application.GetPayment
 {
     public class PaymentDTO
     {

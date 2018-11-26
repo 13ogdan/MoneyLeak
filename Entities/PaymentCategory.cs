@@ -2,7 +2,7 @@
 {
     public class PaymentCategory
     {
-        string PaymentId { get; set; }
-        int CategoryId { get; set; }
+        public string PaymentId { get; set; }
+        public int CategoryId { get; set; }
     }
 }

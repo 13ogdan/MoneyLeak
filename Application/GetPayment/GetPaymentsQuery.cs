@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Payment
+namespace Application.GetPayment
 {
     public class GetPaymentsQuery:IRequest<List<PaymentDTO>>
     {

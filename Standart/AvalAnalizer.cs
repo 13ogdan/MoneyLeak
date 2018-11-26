@@ -24,7 +24,7 @@ namespace BankReport
             8- Вихідний залишок (у валюті рахунку)
             */
             var items = line.Split(';');
-            Payment payment = new Payment();
+            var payment = new Payment();
             payment.Date = ParseDate(items[0]);
             payment.Amout = double.Parse(items[5]);
             payment.Details = items[3];

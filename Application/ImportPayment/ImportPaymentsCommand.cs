@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using EFStorage;
 using MediatR;
 
-namespace Application.Payment
+namespace Application.ImportPayment
 {
     public class ImportPaymentsCommand : IRequest
     {
@@ -29,9 +29,17 @@ namespace Application.Payment
             _importReport = importReport;
         }
 
-        public Task<Unit> Handle(ImportPaymentsCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ImportPaymentsCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var importResult = _importReport.Import(request.Report);
+            foreach (var payment in importResult.ValidPayments)
+            {
+                //TODO check if already exists
+                await _dBContext.Payments.AddAsync(payment).ConfigureAwait(false);
+                
+            }
+
+            return Unit.Value;
         }
     }
 }
