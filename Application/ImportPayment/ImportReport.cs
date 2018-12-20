@@ -1,11 +1,11 @@
-﻿using BankReport;
-using Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using BankReport;
+using Entity;
 
-namespace Application
+namespace Application.ImportPayment
 {
     public class ImportReportHelper : IImportReportHelper
     {
@@ -28,7 +28,7 @@ namespace Application
                     var bankPayment = analyzer.ParseReportLine(report[i]);
                     var payment = new Payment();
                     if (bankPayment.Amout > 0)
-                        payment.IsIncomming = true;
+                        payment.Income = true;
                     payment.Amount = new decimal(Math.Abs(bankPayment.Amout));
                     payment.Date = bankPayment.Date;
                     payment.Details = bankPayment.Details;
