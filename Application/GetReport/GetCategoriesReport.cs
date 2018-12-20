@@ -1,7 +1,8 @@
-﻿using System;
+﻿// <copyright>BSP corporation</copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EFStorage;
@@ -20,7 +21,10 @@ namespace Application.GetReport
         public DateTime? EndDate { get; set; }
     }
 
-    public interface ICategoryReport { }
+    public interface ICategoryReport
+    {
+        IReadOnlyDictionary<Category, decimal> CategoriesOutcome { get; }
+    }
 
     public class CategoryReport : ICategoryReport
     {
@@ -57,8 +61,7 @@ namespace Application.GetReport
                     {
                         category,
                         Sum = outcomes.Sum()
-                    })
-                .ToArrayAsync(cancellationToken);
+                    }).ToArrayAsync(cancellationToken);
 
             var categoryReport = new CategoryReport();
             foreach (var reportItem in report)
