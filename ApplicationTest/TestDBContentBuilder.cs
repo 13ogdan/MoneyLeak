@@ -6,6 +6,7 @@ using Entity;
 
 namespace ApplicationTest
 {
+    //TODO move classes to separate assembly
     public class TestDBContentBuilder
     {
         private readonly AccountingDBContext _context;
@@ -28,6 +29,7 @@ namespace ApplicationTest
     }
 
     //TODO use builder where possible
+    //TODO Create WithRandomData
     public class PaymentBuilder
     {
         private readonly Payment _payment;

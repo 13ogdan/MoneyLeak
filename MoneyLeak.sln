@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleMoneyLeakAnalyzer", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebCoreApplication", "WebCoreApplication\WebCoreApplication.csproj", "{803FBA88-B0F5-4A6C-9D05-88DFC8443D43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationTest", "ApplicationTest\ApplicationTest.csproj", "{E61B32A8-474F-4DD5-9EDA-A37D7C29231A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationTest", "ApplicationTest\ApplicationTest.csproj", "{E61B32A8-474F-4DD5-9EDA-A37D7C29231A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationIntegrationTest", "ApplicationIntegrationTest\ApplicationIntegrationTest.csproj", "{728E253E-6A10-4062-9E35-12E013216BC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{E61B32A8-474F-4DD5-9EDA-A37D7C29231A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E61B32A8-474F-4DD5-9EDA-A37D7C29231A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E61B32A8-474F-4DD5-9EDA-A37D7C29231A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728E253E-6A10-4062-9E35-12E013216BC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728E253E-6A10-4062-9E35-12E013216BC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728E253E-6A10-4062-9E35-12E013216BC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728E253E-6A10-4062-9E35-12E013216BC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{5F3DEFDE-793B-4E65-A5AE-D782460C14B7} = {55DFC588-200F-4123-8E26-592E47174755}
 		{803FBA88-B0F5-4A6C-9D05-88DFC8443D43} = {55DFC588-200F-4123-8E26-592E47174755}
 		{E61B32A8-474F-4DD5-9EDA-A37D7C29231A} = {6BA1D66B-FB21-48CD-8773-3C7CFBF34C2C}
+		{728E253E-6A10-4062-9E35-12E013216BC1} = {6BA1D66B-FB21-48CD-8773-3C7CFBF34C2C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {745F7D27-8A20-4FE3-BE57-3A623F56FC8E}
