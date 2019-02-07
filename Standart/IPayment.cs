@@ -2,7 +2,7 @@
 {
     public interface IPayment
     {
-        double Amout { get; }
+        double Amount { get; }
         System.DateTime Date { get; }
         string Details { get; }
     }

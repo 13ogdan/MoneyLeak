@@ -27,9 +27,9 @@ namespace Application.ImportPayment
                 {
                     var bankPayment = analyzer.ParseReportLine(report[i]);
                     var payment = new Payment();
-                    if (bankPayment.Amout > 0)
+                    if (bankPayment.Amount > 0)
                         payment.Income = true;
-                    payment.Amount = new decimal(Math.Abs(bankPayment.Amout));
+                    payment.Amount = new decimal(Math.Abs(bankPayment.Amount));
                     payment.Date = bankPayment.Date;
                     payment.Details = bankPayment.Details;
 

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// <copyright>BSP corporation</copyright>
+
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using EFStorage;
 using Entity;
 using MediatR;
@@ -12,16 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.SetCategory
 {
-    public class SetCategoryCommand:IRequest
+    public class SetCategoryCommand : IRequest
     {
         public Payment Payment { get; set; }
+
         public Category Category { get; set; }
+
         public bool ApplyToAllWithSuchDetails { get; set; }
     }
 
     public class SetCategoryHandler : IRequestHandler<SetCategoryCommand>
     {
-        private AccountingDBContext _accountingDbContext;
+        private readonly AccountingDBContext _accountingDbContext;
 
         public SetCategoryHandler(AccountingDBContext accountingDbContext)
         {
@@ -32,7 +32,8 @@ namespace Application.SetCategory
         {
             if (request.ApplyToAllWithSuchDetails)
             {
-                var payments = await _accountingDbContext.Payments.Where(payment => payment.Details == request.Payment.Details).ToArrayAsync(cancellationToken: cancellationToken);
+                var payments = await _accountingDbContext.Payments.Where(payment => payment.Details == request.Payment.Details)
+                    .ToArrayAsync(cancellationToken: cancellationToken);
                 foreach (var payment in payments)
                 {
                     payment.Category = request.Category;
@@ -44,7 +45,6 @@ namespace Application.SetCategory
             }
 
             await _accountingDbContext.SaveChangesAsync(cancellationToken);
-            
             return Unit.Value;
         }
     }

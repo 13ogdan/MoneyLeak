@@ -8,6 +8,7 @@ namespace ApplicationTest
     public class TestWithDBContextBase
     {
         protected AccountingDBContext _context;
+        private TestDBContentBuilder _dbContentBuilder;
 
         [TestInitialize]
         public void BaseTestInitialize()
@@ -17,12 +18,17 @@ namespace ApplicationTest
                 .Options;
 
             _context = new AccountingDBContext(options);
+
+            _dbContentBuilder = new TestDBContentBuilder(_context);
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
+            _context.Database.EnsureDeleted();
             _context.Dispose();
         }
+
+        protected TestDBContentBuilder DbContentBuilder => _dbContentBuilder;
     }
 }

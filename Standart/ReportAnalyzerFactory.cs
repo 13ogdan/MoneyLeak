@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// <copyright>BSP corporation</copyright>
+
+using System;
 
 namespace BankReport
 {
@@ -10,6 +10,7 @@ namespace BankReport
         {
             if (AvalAnalizer.CanParse(headerLine))
                 return new AvalAnalizer();
+
             throw new ApplicationException("Cannot find proper analyzer for report");
         }
     }

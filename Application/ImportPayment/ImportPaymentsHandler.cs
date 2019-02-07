@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using EFStorage;
 using MediatR;
@@ -19,8 +21,15 @@ namespace Application.ImportPayment
         public async Task<Unit> Handle(ImportPaymentsCommand request, CancellationToken cancellationToken)
         {
             var importResult = _importReport.Import(request.Report);
-            //TODO check what happen if entity exists.
-            await _dBContext.Payments.AddRangeAsync(importResult.ValidPayments, cancellationToken).ConfigureAwait(false);
+            foreach (var payment in importResult.ValidPayments)
+            {
+                if (payment.PaymentId == null)
+                    throw new InvalidOperationException("Payment has no generated id. Parsing report has been done with problems.");
+
+                if (await _dBContext.Payments.FindAsync(payment.PaymentId) == null)
+                    await _dBContext.Payments.AddAsync(payment, cancellationToken).ConfigureAwait(false);    
+            }
+            
             var savedPayments = await _dBContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             //TODO send notification that we have new payments
             //TODO send notification about problematic report lines

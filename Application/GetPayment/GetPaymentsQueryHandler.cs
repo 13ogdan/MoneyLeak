@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace Application.GetPayment
         {
             var payments = _accountingDbContext.Payments.Where(payment => !payment.Income && FilterByDate(payment, request)
                                                                 && FilterByPhrase(payment, request) && FilterByCategory(payment, request));
-            
+
             return await payments.ToArrayAsync(cancellationToken);
         }
 
@@ -33,7 +34,12 @@ namespace Application.GetPayment
 
         private bool FilterByPhrase(Payment payment, GetPaymentsQuery request)
         {
-            return string.IsNullOrWhiteSpace(request.WithPhraseInDetails) || payment.Details.Contains(request.WithPhraseInDetails);
+            var ignoreDetails = string.IsNullOrWhiteSpace(request.WithPhraseInDetails);
+            if (ignoreDetails)
+                return true;
+
+            return payment.Details != null
+             && payment.Details.Contains(request.WithPhraseInDetails, StringComparison.InvariantCultureIgnoreCase);
         }
 
         private bool FilterByDate(Payment payment, GetPaymentsQuery request)

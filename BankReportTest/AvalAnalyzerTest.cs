@@ -25,7 +25,7 @@ namespace BankReportFrameworkTest
 
             Assert.AreEqual(new DateTime(2018, 11, 4), report.Date);
             Assert.AreEqual("205 - Безготівковий платіж.dofiokofekafe KIYEV", report.Details);
-            Assert.AreEqual(-148.00, report.Amout);
+            Assert.AreEqual(-148.00, report.Amount);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace BankReportFrameworkTest
 
             var report = analyzer.ParseReportLine(LineWithDollarLikeACurrency);
 
-            Assert.AreEqual(-28.25, report.Amout);
+            Assert.AreEqual(-28.25, report.Amount);
         }
 
         [TestMethod]

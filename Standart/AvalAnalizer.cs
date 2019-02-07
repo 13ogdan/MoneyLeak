@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace BankReport
@@ -6,6 +7,14 @@ namespace BankReport
     public class AvalAnalizer : IReportAnalyzer
     {
         private static string AvalHeaderLine = "\"Дата операції/Дата обробки операції\";Номер картки;Тип операції;Деталі операції;Вхідний залишок (у валюті рахунку);Сума у валюті рахунку;Сума у валюті операції;Валюта операції;Вихідний залишок (у валюті рахунку)";
+        private readonly NumberFormatInfo _numberInfo;
+        private CultureInfo _culture;
+
+        public AvalAnalizer()
+        {
+            _culture = CultureInfo.CreateSpecificCulture("uk-UA");
+            _numberInfo = _culture.NumberFormat;
+        }
 
         public IPayment ParseReportLine(string line)
         {
@@ -26,7 +35,9 @@ namespace BankReport
             var items = line.Split(';');
             var payment = new Payment();
             payment.Date = ParseDate(items[0]);
-            payment.Amout = double.Parse(items[5]);
+           
+            _numberInfo.CurrencyGroupSeparator = " ";
+            payment.Amount = double.Parse(items[5], _numberInfo);
             payment.Details = items[3];
             return payment;
         }
