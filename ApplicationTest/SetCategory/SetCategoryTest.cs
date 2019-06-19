@@ -23,7 +23,7 @@ namespace ApplicationTest.SetCategory
             _setCategoryHandler = new SetCategoryHandler(_context);
             AddBasePayments();
             _payment = _context.Payments.First(payment => payment.Details == _duplicatedDetails);
-            
+
         }
 
         [TestMethod]
@@ -114,30 +114,12 @@ namespace ApplicationTest.SetCategory
         private void AddBasePayments()
         {
             _duplicatedDetails = "1";
-            _context.Payments.Add(new Payment
-            {
-                Details = _duplicatedDetails
-            });
-            _context.Payments.Add(new Payment
-            {
-                Details = "2"
-            });
-            _context.Payments.Add(new Payment
-            {
-                Details = "3"
-            });
-            _context.Payments.Add(new Payment
-            {
-                Details = _duplicatedDetails+1
-            });
-            _context.Payments.Add(new Payment
-            {
-                Details = _duplicatedDetails+_duplicatedDetails
-            });
-            _context.Payments.Add(new Payment
-            {
-                Details = _duplicatedDetails
-            });
+            _context.Payments.Add(new PaymentBuilder().WithRandomData().WithDetails(_duplicatedDetails).Build());
+            _context.Payments.Add(new PaymentBuilder().WithRandomData().WithDetails("2").Build());
+            _context.Payments.Add(new PaymentBuilder().WithRandomData().WithDetails("3").Build());
+            _context.Payments.Add(new PaymentBuilder().WithRandomData().WithDetails(_duplicatedDetails + 1).Build());
+            _context.Payments.Add(new PaymentBuilder().WithRandomData().WithDetails(_duplicatedDetails + _duplicatedDetails).Build());
+            _context.Payments.Add(new PaymentBuilder().WithRandomData().WithDetails(_duplicatedDetails).Build());
             _context.SaveChanges();
         }
     }

@@ -13,7 +13,7 @@ using Moq;
 namespace ApplicationTest.ImportPayment
 {
     [TestClass]
-    internal sealed class ImportPaymentsHandlerTest : TestWithDBContextBase
+    public sealed class ImportPaymentsHandlerTest : TestWithDBContextBase
     {
         private ImportPaymentsHandler _importPayment;
         private readonly ICollection<Payment> _payments = new List<Payment>();
@@ -33,10 +33,7 @@ namespace ApplicationTest.ImportPayment
         [TestMethod]
         public async Task Should_AddNewEmptyPayment()
         {
-            var payment = new Payment
-            {
-                PaymentId = Guid.NewGuid().ToString()
-            };
+            var payment = new PaymentBuilder().CreateWithRandomData();
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
@@ -48,7 +45,9 @@ namespace ApplicationTest.ImportPayment
         [TestMethod]
         public async Task Should_AddNewPayment()
         {
-            var payment = CreatePayment();
+            var payment = new PaymentBuilder().CreateWithRandomData();
+            //Category doesn't exists in the imported data.
+            payment.Category = null;
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
@@ -65,32 +64,20 @@ namespace ApplicationTest.ImportPayment
         public async Task Should_NotAddDuplicateOrChange_If_PaymentExistsAsync()
         {
             //Arrange
-            var payment = CreatePayment();
+            var payment = new PaymentBuilder().CreateWithRandomData();
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
             var savedPayment = await _context.Payments.FindAsync(payment.PaymentId);
-            savedPayment.Category = new Category() { Name = "Category", CategoryId = 0 };
+            savedPayment.Category = new CategoryBuilder().CreateWithRandomData();
             await _context.SaveChangesAsync();
+
             //Act
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
+
             //Assert
             savedPayment = await _context.Payments.FindAsync(payment.PaymentId);
             Assert.IsNotNull(savedPayment.Category);
-        }
-
-        public Payment CreatePayment()
-        {
-            var paymentDate = DateTime.Today;
-            var details = "Buy beer for Tka4";
-
-            return new Payment
-            {
-                Amount = 100.0m,
-                Date = paymentDate,
-                Details = details,
-                PaymentId = Guid.NewGuid().ToString()
-            };
         }
     }
 }
