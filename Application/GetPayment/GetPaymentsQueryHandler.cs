@@ -1,4 +1,6 @@
-﻿using System;
+﻿// <copyright>BSP corporation</copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -38,8 +40,11 @@ namespace Application.GetPayment
             if (ignoreDetails)
                 return true;
 
-            return payment.Details != null
-             && payment.Details.Contains(request.WithPhraseInDetails, StringComparison.InvariantCultureIgnoreCase);
+            var detailsAlias = payment.Details?.Alias + payment.Details?.FullDetails;
+            if (string.IsNullOrEmpty(detailsAlias))
+                return false;
+
+            return detailsAlias.Contains(request.WithPhraseInDetails, StringComparison.InvariantCultureIgnoreCase);
         }
 
         private bool FilterByDate(Payment payment, GetPaymentsQuery request)

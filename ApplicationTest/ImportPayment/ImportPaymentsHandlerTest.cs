@@ -16,7 +16,7 @@ namespace ApplicationTest.ImportPayment
     public sealed class ImportPaymentsHandlerTest : TestWithDBContextBase
     {
         private ImportPaymentsHandler _importPayment;
-        private readonly ICollection<Payment> _payments = new List<Payment>();
+        private readonly ICollection<PaymentInfo> _payments = new List<PaymentInfo>();
 
         [TestInitialize]
         public void TestInitialize()
@@ -33,7 +33,7 @@ namespace ApplicationTest.ImportPayment
         [TestMethod]
         public async Task Should_AddNewEmptyPayment()
         {
-            var payment = new PaymentBuilder().CreateWithRandomData();
+            var payment = new PaymentInfoBuilder().CreateWithRandomData();
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
@@ -45,9 +45,7 @@ namespace ApplicationTest.ImportPayment
         [TestMethod]
         public async Task Should_AddNewPayment()
         {
-            var payment = new PaymentBuilder().CreateWithRandomData();
-            //Category doesn't exists in the imported data.
-            payment.Category = null;
+            var payment = new PaymentInfoBuilder().CreateWithRandomData();
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
@@ -56,7 +54,7 @@ namespace ApplicationTest.ImportPayment
             Assert.IsNotNull(savedPayment);
             Assert.AreEqual(payment.Amount, savedPayment.Amount);
             Assert.AreEqual(payment.Date, savedPayment.Date);
-            Assert.AreEqual(payment.Details, savedPayment.Details);
+            Assert.AreEqual(payment.Details, savedPayment.Details.FullDetails);
             Assert.IsNull(savedPayment.Category);
         }
 
@@ -64,7 +62,7 @@ namespace ApplicationTest.ImportPayment
         public async Task Should_NotAddDuplicateOrChange_If_PaymentExistsAsync()
         {
             //Arrange
-            var payment = new PaymentBuilder().CreateWithRandomData();
+            var payment = new PaymentInfoBuilder().CreateWithRandomData();
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
@@ -79,5 +77,48 @@ namespace ApplicationTest.ImportPayment
             savedPayment = await _context.Payments.FindAsync(payment.PaymentId);
             Assert.IsNotNull(savedPayment.Category);
         }
+
+        [TestMethod]
+        public async Task Should_ApplyDefaultCategory()
+        {
+            //Arrange
+            var details = DbContentBuilder.Details().CreateWithRandomData();
+            details.DefaultCategory = DbContentBuilder.Category().CreateWithRandomData();
+
+            var payment = new PaymentInfoBuilder().CreateWithRandomData();
+            payment.Details = details.FullDetails;
+            _payments.Add(payment);
+
+            //Act
+            await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
+
+            //Assert
+            var savedPayment = await _context.Payments.FindAsync(payment.PaymentId);
+            Assert.AreEqual(savedPayment.Category, details.DefaultCategory);
+            Assert.AreEqual(savedPayment.Details, details);
+        }
+
+
+        [TestMethod]
+        public async Task Should_AddNewDetails()
+        {
+            //Arrange
+            var details = DbContentBuilder.Details().CreateWithRandomData();
+            details.DefaultCategory = DbContentBuilder.Category().CreateWithRandomData();
+
+            var someDetails = "Some details";
+            var payment = new PaymentInfoBuilder().WithRandomData().WithDetails(someDetails).Build();
+            _payments.Add(payment);
+
+            //Act
+            await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
+
+            //Assert
+            var savedPayment = await _context.Payments.FindAsync(payment.PaymentId);
+            Assert.AreEqual(savedPayment.Details.FullDetails, someDetails);
+            var savedDetails = await _context.Details.FindAsync(someDetails);
+            Assert.IsNotNull(savedDetails);
+        }
+
     }
 }

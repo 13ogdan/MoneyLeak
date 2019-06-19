@@ -1,8 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿// <copyright>BSP corporation</copyright>
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using EFStorage;
+using Entity;
 using MediatR;
 
 namespace Application.ImportPayment
@@ -21,10 +23,23 @@ namespace Application.ImportPayment
         public async Task<Unit> Handle(ImportPaymentsCommand request, CancellationToken cancellationToken)
         {
             var importResult = _importReport.Import(request.Report);
-            foreach (var payment in importResult.ValidPayments)
+            foreach (var paymentInfo in importResult.ValidPayments)
             {
-                if (payment.PaymentId == null)
+                if (paymentInfo.PaymentId == null)
                     throw new InvalidOperationException("Payment has no generated id. Parsing report has been done with problems.");
+
+                //TODO we need to improve details saving
+                var details = await _dBContext.Details.FindAsync(paymentInfo.Details) ?? new Details() { FullDetails = paymentInfo.Details };
+
+                var payment = new Payment()
+                {
+                    PaymentId = paymentInfo.PaymentId,
+                    Amount = paymentInfo.Amount,
+                    Income = paymentInfo.Income,
+                    Date = paymentInfo.Date,
+                    Details = details,
+                    Category = details.DefaultCategory,
+                };
 
                 if (await _dBContext.Payments.FindAsync(payment.PaymentId) == null)
                     await _dBContext.Payments.AddAsync(payment, cancellationToken).ConfigureAwait(false);

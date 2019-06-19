@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankReportTest", "BankReportTest\BankReportTest.csproj", "{A6776D72-1C19-453C-B1EC-AB54154B56F2}"
 EndProject
@@ -29,7 +29,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebCoreApplication", "WebCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationTest", "ApplicationTest\ApplicationTest.csproj", "{E61B32A8-474F-4DD5-9EDA-A37D7C29231A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationIntegrationTest", "ApplicationIntegrationTest\ApplicationIntegrationTest.csproj", "{728E253E-6A10-4062-9E35-12E013216BC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationIntegrationTest", "ApplicationIntegrationTest\ApplicationIntegrationTest.csproj", "{728E253E-6A10-4062-9E35-12E013216BC1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specification", "Specification", "{C54BD7CA-58AB-42F1-92A9-2F92A0DBDC05}"
+	ProjectSection(SolutionItems) = preProject
+		Specification.docx = Specification.docx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

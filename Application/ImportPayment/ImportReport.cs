@@ -26,7 +26,7 @@ namespace Application.ImportPayment
                 try
                 {
                     var bankPayment = analyzer.ParseReportLine(report[i]);
-                    var payment = new Payment();
+                    var payment = new PaymentInfo();
                     if (bankPayment.Amount > 0)
                         payment.Income = true;
                     payment.Amount = new decimal(Math.Abs(bankPayment.Amount));
@@ -56,11 +56,11 @@ namespace Application.ImportPayment
         {
             public ReportImportResult()
             {
-                ValidPayments = new HashSet<Payment>();
+                ValidPayments = new HashSet<PaymentInfo>();
                 InvalidPaymentsLine = new HashSet<string>();
             }
 
-            public ICollection<Payment> ValidPayments { get; private set; }
+            public ICollection<PaymentInfo> ValidPayments { get; private set; }
             public ICollection<string> InvalidPaymentsLine { get; private set; }
         }
     }

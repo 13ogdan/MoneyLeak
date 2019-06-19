@@ -22,7 +22,7 @@ namespace ApplicationTest.SetCategory
         {
             _setCategoryHandler = new SetCategoryHandler(_context);
             AddBasePayments();
-            _payment = _context.Payments.First(payment => payment.Details == _duplicatedDetails);
+            _payment = _context.Payments.First(payment => payment.Details.FullDetails == _duplicatedDetails);
 
         }
 
