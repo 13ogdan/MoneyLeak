@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.GetPayment;
 using Entity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ApplicationTest.GetPayments
@@ -30,6 +31,24 @@ namespace ApplicationTest.GetPayments
             var payments = result.ToArray();
 
             Assert.AreEqual(_count, payments.Length);
+        }
+
+        //TODO Investigate why it happens
+        [TestMethod, Ignore]
+        public async Task MagicTest()
+        {
+            //var payments = _context.Payments.Where(payment => payment.Category == null).ToArray();
+            var payments = _context.Payments.Include(payment => payment.Category).Where(payment => IsCategoryNull(payment)).ToArray();
+            var expectedPayments = _context.Payments.Where(payment => payment.CategoryId == null).ToArray();
+
+            Assert.AreEqual(expectedPayments.Length, payments.Length);
+            CollectionAssert.AreEquivalent(expectedPayments, payments);
+        }
+
+        private static bool IsCategoryNull(Payment payment)
+        {
+            return payment.Category == null;
+            //return payment.CategoryId == null;
         }
 
         [TestMethod]

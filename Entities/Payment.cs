@@ -10,6 +10,7 @@ namespace Entity
         public Details Details { get; set; }
 
         public Category Category{ get;set; }
+        public string CategoryId{ get;set; }
     }
 
     public class Income
