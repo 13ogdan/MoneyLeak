@@ -23,15 +23,18 @@ namespace Application.GetPayment
 
         public async Task<IEnumerable<Payment>> Handle(GetPaymentsQuery request, CancellationToken cancellationToken)
         {
-            var payments = _accountingDbContext.Payments.Where(payment => !payment.Income && FilterByDate(payment, request)
-                                                                && FilterByPhrase(payment, request) && FilterByCategory(payment, request));
+            var payments = _accountingDbContext.Payments.Where(payment =>
+                                                                   FilterByDate(payment, request) &&
+                                                                   FilterByPhrase(payment, request) &&
+                                                                   FilterByCategory(payment, request));
 
             return await payments.ToArrayAsync(cancellationToken);
         }
 
         private bool FilterByCategory(Payment payment, GetPaymentsQuery request)
         {
-            return !request.WithEmptyCategory || (request.WithEmptyCategory && payment.Category == null);
+            var result = !request.WithEmptyCategory || (request.WithEmptyCategory && payment.Category == null);
+            return result;
         }
 
         private bool FilterByPhrase(Payment payment, GetPaymentsQuery request)
@@ -44,12 +47,15 @@ namespace Application.GetPayment
             if (string.IsNullOrEmpty(detailsAlias))
                 return false;
 
-            return detailsAlias.Contains(request.WithPhraseInDetails, StringComparison.InvariantCultureIgnoreCase);
+            var result = detailsAlias.Contains(request.WithPhraseInDetails, StringComparison.InvariantCultureIgnoreCase);
+            return result;
         }
 
         private bool FilterByDate(Payment payment, GetPaymentsQuery request)
         {
-            return request.Date == null || payment.Date == request.Date;
+            var result = (request.DateFrom == null || payment.Date >= request.DateFrom) &&
+                (request.DateTo == null || payment.Date <= request.DateTo);
+            return result;
         }
     }
 }

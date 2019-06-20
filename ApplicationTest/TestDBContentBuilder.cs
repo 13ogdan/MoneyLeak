@@ -153,9 +153,8 @@ namespace ApplicationTest
 
             _entity.Category = GetRandomBool() ? new CategoryBuilder().CreateWithRandomData() : _entity.Details.DefaultCategory;
 
-            _entity.Income = GetRandomBool();
             _entity.Date = GetRandomDateTime();
-            _entity.PaymentId = GetRandomString();
+            _entity.Id = GetRandomString();
         }
     }
 
@@ -179,6 +178,12 @@ namespace ApplicationTest
         public PaymentInfoBuilder WithAmount(decimal amount)
         {
             _entity.Amount = amount;
+            return this;
+        }
+
+        public PaymentInfoBuilder IsIncome(bool isIncome)
+        {
+            _entity.Income = isIncome;
             return this;
         }
 

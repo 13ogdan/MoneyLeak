@@ -44,7 +44,7 @@ namespace ApplicationTest.SetCategory
             await _setCategoryHandler.Handle(setCategoryCommand, CancellationToken.None);
 
             //Assert
-            var paymentInDB = _context.Payments.Find(_payment.PaymentId);
+            var paymentInDB = _context.Payments.Find(_payment.Id);
             Assert.IsNotNull(paymentInDB.Category);
             Assert.AreEqual(category.Name, paymentInDB.Category.Name);
 
@@ -77,7 +77,7 @@ namespace ApplicationTest.SetCategory
             await _setCategoryHandler.Handle(setCategoryCommand, CancellationToken.None);
 
             //Assert
-            var paymentInDB = _context.Payments.Find(_payment.PaymentId);
+            var paymentInDB = _context.Payments.Find(_payment.Id);
             Assert.IsNotNull(paymentInDB.Category);
             Assert.AreEqual(category.Name, paymentInDB.Category.Name);
 

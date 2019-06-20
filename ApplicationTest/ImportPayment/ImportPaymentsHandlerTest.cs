@@ -1,12 +1,10 @@
 ﻿// <copyright>BSP corporation</copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application;
 using Application.ImportPayment;
-using Entity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -15,8 +13,8 @@ namespace ApplicationTest.ImportPayment
     [TestClass]
     public sealed class ImportPaymentsHandlerTest : TestWithDBContextBase
     {
-        private ImportPaymentsHandler _importPayment;
         private readonly ICollection<PaymentInfo> _payments = new List<PaymentInfo>();
+        private ImportPaymentsHandler _importPayment;
 
         [TestInitialize]
         public void TestInitialize()
@@ -33,7 +31,7 @@ namespace ApplicationTest.ImportPayment
         [TestMethod]
         public async Task Should_AddNewEmptyPayment()
         {
-            var payment = new PaymentInfoBuilder().CreateWithRandomData();
+            var payment = new PaymentInfoBuilder().WithRandomData().IsIncome(false).Build();
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
@@ -45,7 +43,7 @@ namespace ApplicationTest.ImportPayment
         [TestMethod]
         public async Task Should_AddNewPayment()
         {
-            var payment = new PaymentInfoBuilder().CreateWithRandomData();
+            var payment = new PaymentInfoBuilder().WithRandomData().IsIncome(false).Build();
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
@@ -62,7 +60,7 @@ namespace ApplicationTest.ImportPayment
         public async Task Should_NotAddDuplicateOrChange_If_PaymentExistsAsync()
         {
             //Arrange
-            var payment = new PaymentInfoBuilder().CreateWithRandomData();
+            var payment = new PaymentInfoBuilder().WithRandomData().IsIncome(false).Build();
             _payments.Add(payment);
 
             await _importPayment.Handle(new ImportPaymentsCommand(null), CancellationToken.None);
@@ -85,7 +83,7 @@ namespace ApplicationTest.ImportPayment
             var details = DbContentBuilder.Details().CreateWithRandomData();
             details.DefaultCategory = DbContentBuilder.Category().CreateWithRandomData();
 
-            var payment = new PaymentInfoBuilder().CreateWithRandomData();
+            var payment = new PaymentInfoBuilder().WithRandomData().IsIncome(false).Build();
             payment.Details = details.FullDetails;
             _payments.Add(payment);
 
@@ -98,7 +96,6 @@ namespace ApplicationTest.ImportPayment
             Assert.AreEqual(savedPayment.Details, details);
         }
 
-
         [TestMethod]
         public async Task Should_AddNewDetails()
         {
@@ -107,7 +104,7 @@ namespace ApplicationTest.ImportPayment
             details.DefaultCategory = DbContentBuilder.Category().CreateWithRandomData();
 
             var someDetails = "Some details";
-            var payment = new PaymentInfoBuilder().WithRandomData().WithDetails(someDetails).Build();
+            var payment = new PaymentInfoBuilder().WithRandomData().WithDetails(someDetails).IsIncome(false).Build();
             _payments.Add(payment);
 
             //Act
@@ -120,5 +117,6 @@ namespace ApplicationTest.ImportPayment
             Assert.IsNotNull(savedDetails);
         }
 
+        //TODO write unit tests for Income table
     }
 }

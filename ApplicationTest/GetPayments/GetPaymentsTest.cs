@@ -13,7 +13,7 @@ namespace ApplicationTest.GetPayments
     [TestClass]
     public sealed class GetPaymentsTest : TestWithDBContextBase
     {
-        private readonly int _count = 5;
+        private readonly int _count = 10;
         private GetPaymentsQueryHandler _handler;
 
         [TestInitialize]
@@ -32,22 +32,84 @@ namespace ApplicationTest.GetPayments
             Assert.AreEqual(_count, payments.Length);
         }
 
-        //TODO add a possibility to set range
         [TestMethod]
         public async Task Should_ReturnPayments_For_SpecificDay()
         {
             var date = new DateTime(2018, 2, 18);
+            DbContentBuilder.Payment().WithDate(date.AddDays(1)).Build();
+            DbContentBuilder.Payment().WithDate(date.AddDays(-1)).Build();
             DbContentBuilder.Payment().WithDate(date).Build();
             DbContentBuilder.Payment().WithDate(date).Build();
             var getPaymentsQuery = new GetPaymentsQuery
             {
-                Date = date
+                DateFrom = date,
+                DateTo = date
             };
 
             var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
             var payments = result.ToArray();
 
             Assert.AreEqual(2, payments.Length);
+        }
+
+        [TestMethod]
+        public async Task Should_ReturnPayments_After_SpecificDay()
+        {
+            var date = new DateTime(2018, 2, 18);
+            DbContentBuilder.Payment().WithDate(date.AddDays(1)).Build();
+            DbContentBuilder.Payment().WithDate(date.AddDays(-1)).Build();
+            DbContentBuilder.Payment().WithDate(date).Build();
+            DbContentBuilder.Payment().WithDate(date).Build();
+            var getPaymentsQuery = new GetPaymentsQuery
+            {
+                DateFrom = date,
+            };
+
+            var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
+            var payments = result.ToArray();
+
+            Assert.AreEqual(3, payments.Length);
+        }
+
+        [TestMethod]
+        public async Task Should_ReturnPayments_Before_SpecificDay()
+        {
+            var date = new DateTime(2018, 2, 18);
+            DbContentBuilder.Payment().WithDate(date.AddDays(1)).Build();
+            DbContentBuilder.Payment().WithDate(date.AddDays(-1)).Build();
+            DbContentBuilder.Payment().WithDate(date).Build();
+            DbContentBuilder.Payment().WithDate(date).Build();
+            var getPaymentsQuery = new GetPaymentsQuery
+            {
+                DateTo = date,
+            };
+
+            var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
+            var payments = result.ToArray();
+
+            Assert.AreEqual(3 , payments.Length);
+        }
+
+        [TestMethod]
+        public async Task Should_ReturnPayments_InRangeOfDates()
+        {
+            var date = new DateTime(2018, 2, 18);
+            DbContentBuilder.Payment().WithDate(date.AddDays(-2)).Build();
+            DbContentBuilder.Payment().WithDate(date.AddDays(+2)).Build();
+            DbContentBuilder.Payment().WithDate(date.AddDays(-1)).Build();
+            DbContentBuilder.Payment().WithDate(date.AddDays(+1)).Build();
+            DbContentBuilder.Payment().WithDate(date).Build();
+            DbContentBuilder.Payment().WithDate(date).Build();
+            var getPaymentsQuery = new GetPaymentsQuery
+            {
+                DateTo = date.AddDays(1),
+                DateFrom = date.AddDays(-1),
+            };
+
+            var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
+            var payments = result.ToArray();
+
+            Assert.AreEqual(4, payments.Length);
         }
 
         [TestMethod]
@@ -70,8 +132,8 @@ namespace ApplicationTest.GetPayments
         [TestMethod]
         public async Task Should_ReturnPayments_Without_Category()
         {
-            DbContentBuilder.Payment().WithCategory(new Category()).Build();
-            DbContentBuilder.Payment().WithCategory(new Category()).Build();
+            DbContentBuilder.Payment().WithCategory(null).Build();
+            DbContentBuilder.Payment().WithCategory(null).Build();
             var getPaymentsQuery = new GetPaymentsQuery
             {
                 WithEmptyCategory = true
@@ -80,7 +142,7 @@ namespace ApplicationTest.GetPayments
             var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
             var payments = result.ToArray();
 
-            Assert.AreEqual(_count, payments.Length);
+            Assert.AreEqual(2, payments.Length);
         }
 
         [TestMethod]
@@ -101,7 +163,8 @@ namespace ApplicationTest.GetPayments
             var getPaymentsQuery = new GetPaymentsQuery
             {
                 WithEmptyCategory = true,
-                Date = date,
+                DateFrom = date,
+                DateTo = date,
                 WithPhraseInDetails = details
             };
 
@@ -113,8 +176,11 @@ namespace ApplicationTest.GetPayments
 
         private void CreateDefaultPayments()
         {
+            var paymentBuilder = DbContentBuilder.Payment();
             for (int i = 0; i < _count; i++)
-                DbContentBuilder.Payment().Build();
+            {
+                paymentBuilder.WithRandomData().Build();
+            }
         }
     }
 }

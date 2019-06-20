@@ -118,7 +118,7 @@ namespace ApplicationTest.EditDetails
 
             var paymentsToChange = new List<string>();
             for (int i = 0; i < 10; i++)
-                paymentsToChange.Add(DbContentBuilder.Payment().WithRandomData().WithCategory(null).WithDetails(details).Build().PaymentId);
+                paymentsToChange.Add(DbContentBuilder.Payment().WithRandomData().WithCategory(null).WithDetails(details).Build().Id);
 
             await _editDetailsHandler.Handle(new EditDetailsRequest
             {
@@ -126,7 +126,7 @@ namespace ApplicationTest.EditDetails
                 NewDefaultCategoryName = newCategory.Name.ToLower()
             }, CancellationToken.None);
 
-            var savedDetails = await _context.Payments.Where(payment => payment.Category == newCategory).Select(payment => payment.PaymentId).ToArrayAsync();
+            var savedDetails = await _context.Payments.Where(payment => payment.Category == newCategory).Select(payment => payment.Id).ToArrayAsync();
             Assert.AreEqual(10, savedDetails.Length);
             CollectionAssert.AreEquivalent(paymentsToChange, savedDetails);
         }

@@ -10,6 +10,7 @@ namespace EFStorage
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Details> Details { get; set; }
+        public DbSet<Income> Incomes { get; set; }
         //public DbSet<PaymentCategory> PaymentCategories { get; set; }
 
         public AccountingDBContext()

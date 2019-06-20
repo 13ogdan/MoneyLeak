@@ -31,18 +31,11 @@ namespace Application.ImportPayment
                 //TODO we need to improve details saving
                 var details = await _dBContext.Details.FindAsync(paymentInfo.Details) ?? new Details() { FullDetails = paymentInfo.Details };
 
-                var payment = new Payment()
-                {
-                    PaymentId = paymentInfo.PaymentId,
-                    Amount = paymentInfo.Amount,
-                    Income = paymentInfo.Income,
-                    Date = paymentInfo.Date,
-                    Details = details,
-                    Category = details.DefaultCategory,
-                };
+                if (paymentInfo.Income)
+                    await CreateOrUpdateIncome(cancellationToken, paymentInfo, details);
+                else
+                    await CreateOrUpdatePayment(cancellationToken, paymentInfo, details);
 
-                if (await _dBContext.Payments.FindAsync(payment.PaymentId) == null)
-                    await _dBContext.Payments.AddAsync(payment, cancellationToken).ConfigureAwait(false);
             }
 
             var savedPayments = await _dBContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -50,5 +43,36 @@ namespace Application.ImportPayment
             //TODO send notification about problematic report lines
             return Unit.Value;
         }
+
+        private async Task CreateOrUpdatePayment(CancellationToken cancellationToken, PaymentInfo paymentInfo, Details details)
+        {
+            var payment = new Payment()
+            {
+                Id = paymentInfo.PaymentId,
+                Amount = paymentInfo.Amount,
+                Date = paymentInfo.Date,
+                Details = details,
+                Category = details.DefaultCategory,
+            };
+
+            if (await _dBContext.Payments.FindAsync(payment.Id) == null)
+                await _dBContext.Payments.AddAsync(payment, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task CreateOrUpdateIncome(CancellationToken cancellationToken, PaymentInfo paymentInfo, Details details)
+        {
+            var income = new Income()
+            {
+                Id = paymentInfo.PaymentId,
+                Amount = paymentInfo.Amount,
+                Date = paymentInfo.Date,
+                Details = details,
+            };
+
+            if (await _dBContext.Incomes.FindAsync(income.Id) == null)
+                await _dBContext.Incomes.AddAsync(income, cancellationToken).ConfigureAwait(false);
+        }
     }
+
+
 }

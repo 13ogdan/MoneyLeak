@@ -55,7 +55,7 @@ namespace Application.GetReport
         public async Task<ICategoryReport> Handle(GetCategoriesReport request, CancellationToken cancellationToken)
         {
             var report = await _accountingDbContext.Payments
-                .Where(payment => !payment.Income && payment.Category != null && payment.Category.ParentCategory == request.ParentCategory
+                .Where(payment => payment.Category != null && payment.Category.ParentCategory == request.ParentCategory
                         && payment.Date >= request.StartDate && payment.Date <= request.EndDate).GroupBy(
                     payment => payment.Category, payment => payment.Amount, (category, outcomes) => new
                     {
