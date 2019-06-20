@@ -151,7 +151,13 @@ namespace ApplicationTest
             _entity.Amount = (decimal)entityAmount;
             _entity.Details = new DetailsBuilder().CreateWithRandomData();
 
-            _entity.Category = GetRandomBool() ? new CategoryBuilder().CreateWithRandomData() : _entity.Details.DefaultCategory;
+            var needToFillCategory = GetRandomBool();
+            if (needToFillCategory)
+            {
+                var needToCreateOwnCategory = GetRandomBool();
+                _entity.Category = needToCreateOwnCategory ? new CategoryBuilder().CreateWithRandomData() : _entity.Details.DefaultCategory;
+            }
+
 
             _entity.Date = GetRandomDateTime();
             _entity.Id = GetRandomString();

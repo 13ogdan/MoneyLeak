@@ -19,8 +19,8 @@ namespace ApplicationTest.GetPayments
         [TestInitialize]
         public void TestInitialize()
         {
-            _handler = new GetPaymentsQueryHandler(_context);
             CreateDefaultPayments();
+            _handler = new GetPaymentsQueryHandler(_context);
         }
 
         [TestMethod]
@@ -68,7 +68,10 @@ namespace ApplicationTest.GetPayments
             var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
             var payments = result.ToArray();
 
-            Assert.AreEqual(3, payments.Length);
+
+            var paymentsAfter = _context.Payments.Where(payment => payment.Date >= date).ToArray();
+            Assert.AreEqual(paymentsAfter.Length , payments.Length);
+            CollectionAssert.AreEquivalent(paymentsAfter, payments);
         }
 
         [TestMethod]
@@ -87,7 +90,9 @@ namespace ApplicationTest.GetPayments
             var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
             var payments = result.ToArray();
 
-            Assert.AreEqual(3 , payments.Length);
+            var paymentsBefore = _context.Payments.Where(payment => payment.Date <= date).ToArray();
+            Assert.AreEqual(paymentsBefore.Length , payments.Length);
+            CollectionAssert.AreEquivalent(paymentsBefore, payments);
         }
 
         [TestMethod]
@@ -138,11 +143,14 @@ namespace ApplicationTest.GetPayments
             {
                 WithEmptyCategory = true
             };
+            var ct = _context.ChangeTracker;
 
             var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
             var payments = result.ToArray();
 
-            Assert.AreEqual(2, payments.Length);
+            var paymentsWithoutCategory = _context.Payments.Where(payment => payment.Category == null).ToArray();
+            Assert.AreEqual(paymentsWithoutCategory.Length , payments.Length);
+            CollectionAssert.AreEquivalent(paymentsWithoutCategory, payments);
         }
 
         [TestMethod]

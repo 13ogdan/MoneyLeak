@@ -14,6 +14,7 @@ namespace ApplicationTest
         public void BaseTestInitialize()
         {
             var options = new DbContextOptionsBuilder<AccountingDBContext>()
+                .EnableDetailedErrors(true)
                 .UseInMemoryDatabase(databaseName: "TestDataBase")
                 .Options;
 

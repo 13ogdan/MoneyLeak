@@ -23,39 +23,51 @@ namespace Application.GetPayment
 
         public async Task<IEnumerable<Payment>> Handle(GetPaymentsQuery request, CancellationToken cancellationToken)
         {
-            var payments = _accountingDbContext.Payments.Where(payment =>
-                                                                   FilterByDate(payment, request) &&
-                                                                   FilterByPhrase(payment, request) &&
-                                                                   FilterByCategory(payment, request));
+            IQueryable<Payment> payments = _accountingDbContext.Payments;
+            payments = FilterByDate(payments, request);
+            payments = FilterByPhrase(payments, request);
+            payments = FilterByCategory(payments, request);
 
             return await payments.ToArrayAsync(cancellationToken);
         }
 
-        private bool FilterByCategory(Payment payment, GetPaymentsQuery request)
+        private IQueryable<Payment> FilterByCategory(IQueryable<Payment> payments, GetPaymentsQuery request)
         {
-            var result = !request.WithEmptyCategory || (request.WithEmptyCategory && payment.Category == null);
-            return result;
+            if (!request.WithEmptyCategory)
+                return payments;
+
+            return payments.Where(payment => payment.Category == null);
         }
 
-        private bool FilterByPhrase(Payment payment, GetPaymentsQuery request)
+        private IQueryable<Payment> FilterByPhrase(IQueryable<Payment> payments, GetPaymentsQuery request)
         {
             var ignoreDetails = string.IsNullOrWhiteSpace(request.WithPhraseInDetails);
             if (ignoreDetails)
-                return true;
+                return payments;
 
+            return payments.Where(payment => IsDetailsValid(payment, request.WithPhraseInDetails));
+        }
+
+        //TODO convert to lambda
+        bool IsDetailsValid(Payment payment, string keyword)
+        {
             var detailsAlias = payment.Details?.Alias + payment.Details?.FullDetails;
+
             if (string.IsNullOrEmpty(detailsAlias))
                 return false;
 
-            var result = detailsAlias.Contains(request.WithPhraseInDetails, StringComparison.InvariantCultureIgnoreCase);
+            var result = detailsAlias.Contains(keyword, StringComparison.InvariantCultureIgnoreCase);
             return result;
         }
 
-        private bool FilterByDate(Payment payment, GetPaymentsQuery request)
+        private IQueryable<Payment> FilterByDate(IQueryable<Payment> payments, GetPaymentsQuery request)
         {
-            var result = (request.DateFrom == null || payment.Date >= request.DateFrom) &&
-                (request.DateTo == null || payment.Date <= request.DateTo);
-            return result;
+            if (request.DateTo == null && request.DateFrom == null)
+                return payments;
+
+            return payments.Where(payment =>
+                (request.DateFrom == null || payment.Date >= request.DateFrom) &&
+                (request.DateTo == null || payment.Date <= request.DateTo));
         }
     }
 }
