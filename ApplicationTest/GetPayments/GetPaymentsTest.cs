@@ -153,6 +153,27 @@ namespace ApplicationTest.GetPayments
             Assert.AreEqual(3, payments.Length);
         }
 
+
+        [TestMethod]
+        public async Task Should_ReturnPayments_With_SpecificDetailsAlias()
+        {
+            var d1 = DbContentBuilder.Details().WithDetails("1").WithAlias("Buy beer in dopio").Build();
+            var d2 = DbContentBuilder.Details().WithDetails("2").WithAlias("Buy coffee in dopio").Build();
+            var d3 = DbContentBuilder.Details().WithDetails("3").WithAlias("Buy coffee in MC").Build();
+            DbContentBuilder.Payment().WithDetails(d1).Build();
+            DbContentBuilder.Payment().WithDetails(d2).Build();
+            DbContentBuilder.Payment().WithDetails(d3).Build();
+            var getPaymentsQuery = new GetPaymentsQuery
+            {
+                WithPhraseInDetails = "dopio"
+            };
+
+            var result = await _handler.Handle(getPaymentsQuery, CancellationToken.None);
+            var payments = result.ToArray();
+
+            Assert.AreEqual(2, payments.Length);
+        }
+
         [TestMethod]
         public async Task Should_ReturnPayments_Without_Category()
         {

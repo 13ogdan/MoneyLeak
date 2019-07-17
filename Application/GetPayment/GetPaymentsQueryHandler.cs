@@ -45,7 +45,8 @@ namespace Application.GetPayment
             if (ignoreDetails)
                 return payments;
 
-            return payments.Where(payment => IsDetailsValid(payment, request.WithPhraseInDetails));
+            return payments.Where(payment => (payment.Details.FullDetails + payment.Details.Alias).Contains(request.WithPhraseInDetails, StringComparison.InvariantCultureIgnoreCase));
+            //return payments.Where(payment => IsDetailsValid(payment, request.WithPhraseInDetails));
         }
 
         //TODO convert to lambda
